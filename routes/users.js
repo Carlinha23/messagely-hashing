@@ -49,20 +49,34 @@ router.get('/', (req, res, next) => {
     res.send("APP IS WORKING!!!")
   })
 
+// Assuming the User.register() method is already implemented to insert a new user into the database
+
 router.post('/register', async (req, res, next) => {
-    try {
-      const { username, password, first_name, last_name, phone } = req.body;
-      if (!username || !password || !first_name || !last_name || !phone) {
-        throw new ExpressError("All fields are required", 400);
-      }
-      const newUser = await User.register({ username, password, first_name, last_name, phone });
-      return res.json(newUser);
-    } catch (e) {
-      if (e.code === '23505') {
-        return next(new ExpressError("Username taken. Please pick another!", 400));
-      }
-      return next(e)
+  try {
+    const { username, password, first_name, last_name, phone } = req.body;
+    if (!username || !password || !first_name || !last_name || !phone) {
+      throw new ExpressError("All fields are required", 400);
     }
-  });
+    // Assuming join_at and last_login_at are automatically set in the database
+    const newUser = await User.register({ username, password, first_name, last_name, phone });
+    return res.json(newUser); // Return the newly registered user
+  } catch (e) {
+    if (e.code === '23505') {
+      return next(new ExpressError("Username taken. Please pick another!", 400));
+    }
+    return next(e); // Pass the error to the error handling middleware
+  }
+});
+
+
+
+router.get('/all', async (req, res, next) => {
+  try {
+    const allUsers = await User.all();
+    return res.json(allUsers);
+  } catch (error) {
+    return next(error);
+  }
+});
 
   module.exports = router;

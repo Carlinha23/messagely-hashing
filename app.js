@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 
 const usersRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth');
 const ExpressError = require("./expressError");
 
 
@@ -10,6 +11,8 @@ app.use(express.json());
 app.use('/users', usersRoutes);
 app.use(usersRoutes);
 
+app.use('/auth', authRoutes);
+// app.use(authRoutes);
 /** 404 catch --- passes to next handler. */
 
 app.use(function (req, res, next) {

@@ -10,12 +10,12 @@ class User {
   /** register new user -- returns
    *    {username, password, first_name, last_name, phone}
    */
-  static async register({username, password, first_name, last_name, phone}) {
+  static async register({username, password, first_name, last_name, phone, join_at, last_login_at}) {
     const result = await db.query(`
       INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at)
       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      RETURNING username, password, first_name, last_name, phone
-    `, [username, password, first_name, last_name, phone]);
+      RETURNING username, password, first_name, last_name, phone, join_at, last_login_at
+    `, [username, password, first_name, last_name, phone, join_at, last_login_at]);
 
     return result.rows[0];
   }
@@ -36,16 +36,19 @@ class User {
   /** All: basic info on all users:
    * [{username, first_name, last_name, phone}, ...] */
 
-  static async all() { }
-
-  /** Get: get user by username
-   *
-   * returns {username,
-   *          first_name,
-   *          last_name,
-   *          phone,
-   *          join_at,
-   *          last_login_at } */
+  static async all() {
+    try {
+      const result = await db.query(`
+        SELECT username, first_name, last_name, phone FROM users
+      `);
+    
+      return result.rows;
+    } catch (error) {
+      throw new Error(`Error retrieving users: ${error.message}`);
+    }
+  }
+  
+    
 
   static async get(username) { }
 

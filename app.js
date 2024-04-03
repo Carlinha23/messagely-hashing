@@ -3,6 +3,7 @@ const app = express();
 
 const usersRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
+const messagesRoutes = require('./routes/messages');
 const ExpressError = require("./expressError");
 
 
@@ -12,6 +13,7 @@ app.use('/users', usersRoutes);
 app.use(usersRoutes);
 
 app.use('/auth', authRoutes);
+app.use('/messages', messagesRoutes);
 // app.use(authRoutes);
 /** 404 catch --- passes to next handler. */
 
